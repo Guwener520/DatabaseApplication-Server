@@ -1,8 +1,8 @@
+using System;
+using System.Threading.Tasks;
 using DbApp.Application.ResourceSystem.Attendances;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Threading.Tasks;
 
 namespace DbApp.WebApi.Controllers
 {
@@ -40,7 +40,7 @@ namespace DbApp.WebApi.Controllers
             {
                 if (id != command.AttendanceId)
                     return BadRequest("URL ID与请求体ID不匹配");
-                
+
                 await _mediator.Send(command);
                 return NoContent();
             }
@@ -133,7 +133,7 @@ namespace DbApp.WebApi.Controllers
             {
                 if (id != command.AttendanceId)
                     return BadRequest("URL ID与请求体ID不匹配");
-                
+
                 await _mediator.Send(command);
                 return NoContent();
             }
@@ -226,8 +226,8 @@ namespace DbApp.WebApi.Controllers
         // 获取异常考勤记录
         [HttpGet("abnormal")]
         public async Task<IActionResult> GetAbnormalRecords(
-            [FromQuery] int? employeeId, 
-            [FromQuery] DateTime startDate, 
+            [FromQuery] int? employeeId,
+            [FromQuery] DateTime startDate,
             [FromQuery] DateTime endDate)
         {
             try

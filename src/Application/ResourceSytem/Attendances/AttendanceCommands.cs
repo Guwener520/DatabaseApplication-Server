@@ -1,7 +1,7 @@
-using MediatR;
+using System;
 using DbApp.Domain.Entities.ResourceSystem;
 using DbApp.Domain.Enums.ResourceSystem;
-using System;
+using MediatR;
 
 namespace DbApp.Application.ResourceSystem.Attendances
 {
@@ -13,16 +13,16 @@ namespace DbApp.Application.ResourceSystem.Attendances
         DateTime? CheckOutTime,
         AttendanceStatus Status,
         LeaveType? LeaveType) : IRequest<int>;
-    
+
     public record UpdateAttendanceCommand(
         int AttendanceId,
         DateTime? CheckInTime,
         DateTime? CheckOutTime,
         AttendanceStatus Status,
         LeaveType? LeaveType) : IRequest;
-    
+
     public record DeleteAttendanceCommand(int AttendanceId) : IRequest;
-    
+
     // 业务操作命令
     public record RecordCheckInCommand(int EmployeeId, DateTime CheckInTime) : IRequest;
     public record RecordCheckOutCommand(int EmployeeId, DateTime CheckOutTime) : IRequest;

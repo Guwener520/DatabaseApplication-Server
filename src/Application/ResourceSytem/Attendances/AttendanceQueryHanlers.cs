@@ -1,12 +1,12 @@
-using DbApp.Domain.Entities.ResourceSystem;
-using DbApp.Domain.Enums.ResourceSystem;
-using DbApp.Domain.Interfaces.ResourceSystem;
-using MediatR;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using DbApp.Domain.Entities.ResourceSystem;
+using DbApp.Domain.Enums.ResourceSystem;
+using DbApp.Domain.Interfaces.ResourceSystem;
+using MediatR;
 
 namespace DbApp.Application.ResourceSystem.Attendances
 {
@@ -37,8 +37,8 @@ namespace DbApp.Application.ResourceSystem.Attendances
         public async Task<List<Attendance>> Handle(GetEmployeeAttendanceQuery request, CancellationToken cancellationToken)
         {
             return (await _attendanceRepository.GetByEmployeeAsync(
-                request.EmployeeId, 
-                request.StartDate, 
+                request.EmployeeId,
+                request.StartDate,
                 request.EndDate
             )).ToList();
         }
@@ -56,8 +56,8 @@ namespace DbApp.Application.ResourceSystem.Attendances
         public async Task<List<Attendance>> Handle(GetDepartmentAttendanceQuery request, CancellationToken cancellationToken)
         {
             return (await _attendanceRepository.GetByDepartmentAsync(
-                request.DepartmentId, 
-                request.StartDate, 
+                request.DepartmentId,
+                request.StartDate,
                 request.EndDate
             )).ToList();
         }
@@ -75,8 +75,8 @@ namespace DbApp.Application.ResourceSystem.Attendances
         public async Task<List<Attendance>> Handle(GetAbnormalRecordsQuery request, CancellationToken cancellationToken)
         {
             return (await _attendanceRepository.GetAbnormalRecordsAsync(
-                request.EmployeeId, 
-                request.StartDate, 
+                request.EmployeeId,
+                request.StartDate,
                 request.EndDate
             )).ToList();
         }
@@ -93,18 +93,18 @@ namespace DbApp.Application.ResourceSystem.Attendances
 
         public async Task<EmployeeStatsResponse> Handle(GetEmployeeStatsQuery request, CancellationToken cancellationToken)
         {
-            var (presentDays, lateDays, absentDays, leaveDays) = 
+            var (presentDays, lateDays, absentDays, leaveDays) =
                 await _attendanceRepository.GetEmployeeStatsAsync(
-                    request.EmployeeId, 
-                    request.StartDate, 
+                    request.EmployeeId,
+                    request.StartDate,
                     request.EndDate
                 );
-            
+
             var totalDays = presentDays + lateDays + absentDays + leaveDays;
-            var attendanceRate = totalDays > 0 
-                ? (decimal)(presentDays + leaveDays) / totalDays * 100 
+            var attendanceRate = totalDays > 0
+                ? (decimal)(presentDays + leaveDays) / totalDays * 100
                 : 0;
-            
+
             return new EmployeeStatsResponse
             {
                 PresentDays = presentDays,
@@ -128,13 +128,13 @@ namespace DbApp.Application.ResourceSystem.Attendances
 
         public async Task<MonthlyStatsResponse> Handle(GetEmployeeMonthlyStatsQuery request, CancellationToken cancellationToken)
         {
-            var (presentDays, lateDays, absentDays, leaveDays) = 
+            var (presentDays, lateDays, absentDays, leaveDays) =
                 await _attendanceRepository.GetEmployeeStatsAsync(
-                    request.EmployeeId, 
-                    new DateTime(request.Year, request.Month, 1, 0, 0, 0, DateTimeKind.Local), 
+                    request.EmployeeId,
+                    new DateTime(request.Year, request.Month, 1, 0, 0, 0, DateTimeKind.Local),
                     new DateTime(request.Year, request.Month, 1, 0, 0, 0, DateTimeKind.Local).AddMonths(1).AddDays(-1)
                 );
-            
+
             return new MonthlyStatsResponse
             {
                 PresentDays = presentDays,
@@ -156,7 +156,7 @@ namespace DbApp.Application.ResourceSystem.Attendances
         {
             var attendance = await _attendanceRepository.GetByIdAsync(request.AttendanceId);
             if (attendance == null) throw new KeyNotFoundException("考勤记录不存在");
-        
+
             attendance.AttendanceStatus = request.Status;
             await _attendanceRepository.UpdateAsync(attendance);
         }
@@ -173,24 +173,25 @@ namespace DbApp.Application.ResourceSystem.Attendances
         public async Task<DepartmentStatsResponse> Handle(GetDepartmentStatsQuery request, CancellationToken cancellationToken)
         {
             var departmentAttendances = await _attendanceRepository.GetByDepartmentAsync(
-                request.DepartmentId, 
-                request.StartDate, 
+                request.DepartmentId,
+                request.StartDate,
                 request.EndDate
             );
-            
+
             var employeeGroups = departmentAttendances.GroupBy(a => a.EmployeeId);
             var totalEmployees = employeeGroups.Count();
-            
+
             int presentDays = 0, lateDays = 0, absentDays = 0, leaveDays = 0;
-            
-           var stats = departmentAttendances
-           .GroupBy(a => 1) // 全局分组
-           .Select(g => new {
-           PresentDays = g.Count(a => a.AttendanceStatus == AttendanceStatus.Present),
-           LateDays = g.Count(a => a.AttendanceStatus == AttendanceStatus.Late),
-           AbsentDays = g.Count(a => a.AttendanceStatus == AttendanceStatus.Absent),
-           LeaveDays = g.Count(a => a.AttendanceStatus == AttendanceStatus.Leave)
-           }).FirstOrDefault();
+
+            var stats = departmentAttendances
+            .GroupBy(a => 1) // 全局分组
+            .Select(g => new
+            {
+                PresentDays = g.Count(a => a.AttendanceStatus == AttendanceStatus.Present),
+                LateDays = g.Count(a => a.AttendanceStatus == AttendanceStatus.Late),
+                AbsentDays = g.Count(a => a.AttendanceStatus == AttendanceStatus.Absent),
+                LeaveDays = g.Count(a => a.AttendanceStatus == AttendanceStatus.Leave)
+            }).FirstOrDefault();
             // 判空赋值
             if (stats != null)
             {
@@ -200,10 +201,10 @@ namespace DbApp.Application.ResourceSystem.Attendances
                 leaveDays = stats.LeaveDays;
             }
             int totalDays = presentDays + lateDays + absentDays + leaveDays;
-            var attendanceRate = totalDays > 0 
-                ? (decimal)(presentDays + leaveDays) / totalDays * 100 
+            var attendanceRate = totalDays > 0
+                ? (decimal)(presentDays + leaveDays) / totalDays * 100
                 : 0;
-            
+
             return new DepartmentStatsResponse
             {
                 TotalEmployees = totalEmployees,

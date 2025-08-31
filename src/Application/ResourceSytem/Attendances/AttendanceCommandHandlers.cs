@@ -1,10 +1,10 @@
+using System;
+using System.Threading;
+using System.Threading.Tasks;
 using DbApp.Domain.Entities.ResourceSystem;
 using DbApp.Domain.Enums.ResourceSystem;
 using DbApp.Domain.Interfaces.ResourceSystem;
 using MediatR;
-using System;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace DbApp.Application.ResourceSystem.Attendances
 {
@@ -22,7 +22,7 @@ namespace DbApp.Application.ResourceSystem.Attendances
             // 检查是否已存在该日期的考勤记录
             var existing = await _attendanceRepository.GetByEmployeeAndDateAsync(
                 request.EmployeeId, request.AttendanceDate);
-            
+
             if (existing != null)
             {
                 throw new InvalidOperationException(
