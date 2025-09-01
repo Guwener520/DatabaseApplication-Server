@@ -1,6 +1,6 @@
 using DbApp.Domain.Entities.UserSystem;
-using DbApp.Domain.Interfaces.UserSystem;
 using DbApp.Domain.Enums.UserSystem;
+using DbApp.Domain.Interfaces.UserSystem;
 using Microsoft.EntityFrameworkCore;
 
 namespace DbApp.Infrastructure.Repositories.UserSystem;
@@ -60,7 +60,7 @@ public class EmployeeRepository(ApplicationDbContext dbContext) : IEmployeeRepos
             .Where(e => e.DepartmentName != null && e.DepartmentName.Equals(departmentName))
             .ToListAsync();
         return employees;
-    } 
+    }
     public async Task<List<Employee>> GetByStaffTypeAsync(StaffType staffType)
     {
         var employees = await _dbContext.Employees

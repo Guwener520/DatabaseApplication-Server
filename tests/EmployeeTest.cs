@@ -232,25 +232,25 @@ public class EmployeeTest
                 {
                     return employeesList;
                 }
-                
-                return employeesList.Where(e => 
+
+                return employeesList.Where(e =>
                     e.DepartmentName != null && e.DepartmentName.Contains(keyword, StringComparison.OrdinalIgnoreCase)).ToList();
             });
 
         Console.WriteLine("\n--- Testing Search Operation ---");
         // Test Search
         var searchHandler = new SearchEmployeesQueryHandler(mockEmployeeRepository.Object);
-        
+
         // Search with "IT" keyword - should return 2 employees (IT Department and IT Support)
         Console.WriteLine("Frontend: Sending SearchEmployeesQuery with keyword 'IT'");
         var searchResult = await searchHandler.Handle(new SearchEmployeesQuery("IT"), default);
-        
+
         Assert.NotNull(searchResult);
         Assert.Equal(2, searchResult.Count);
         Assert.Contains(searchResult, e => e.EmployeeId == 1); // IT Department
         Assert.Contains(searchResult, e => e.EmployeeId == 3); // IT Support
         mockEmployeeRepository.Verify(repo => repo.SearchAsync("IT"), Times.Once);
-        
+
         Console.WriteLine($"Frontend: Received {searchResult.Count} employees matching keyword 'IT'");
         foreach (var emp in searchResult)
         {
@@ -261,12 +261,12 @@ public class EmployeeTest
         // Search with "Human" keyword - should return 1 employee
         Console.WriteLine("\nFrontend: Sending SearchEmployeesQuery with keyword 'Human'");
         var searchResult2 = await searchHandler.Handle(new SearchEmployeesQuery("Human"), default);
-        
+
         Assert.NotNull(searchResult2);
         Assert.Single(searchResult2);
         Assert.Equal(2, searchResult2[0].EmployeeId); // Human Resources
         mockEmployeeRepository.Verify(repo => repo.SearchAsync("Human"), Times.Once);
-        
+
         Console.WriteLine($"Frontend: Received {searchResult2.Count} employee matching keyword 'Human'");
         Console.WriteLine($"  - Employee ID: {searchResult2[0].EmployeeId}, Department: {searchResult2[0].DepartmentName}");
         Console.WriteLine("✓ Search operation with 'Human' keyword test passed");
@@ -274,11 +274,11 @@ public class EmployeeTest
         // Search with empty keyword - should return all employees
         Console.WriteLine("\nFrontend: Sending SearchEmployeesQuery with empty keyword");
         var searchResult3 = await searchHandler.Handle(new SearchEmployeesQuery(""), default);
-        
+
         Assert.NotNull(searchResult3);
         Assert.Equal(3, searchResult3.Count);
         mockEmployeeRepository.Verify(repo => repo.SearchAsync(""), Times.Once);
-        
+
         Console.WriteLine($"Frontend: Received {searchResult3.Count} employees with empty keyword (all employees)");
         Console.WriteLine("✓ Search operation with empty keyword test passed");
 

@@ -1,12 +1,12 @@
-using DbApp.Domain.Entities.ResourceSystem;
-using DbApp.Domain.Enums.ResourceSystem;
-using DbApp.Domain.Interfaces.ResourceSystem;
-using Microsoft.EntityFrameworkCore;
-using DbApp.Infrastructure;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using DbApp.Domain.Entities.ResourceSystem;
+using DbApp.Domain.Enums.ResourceSystem;
+using DbApp.Domain.Interfaces.ResourceSystem;
+using DbApp.Infrastructure;
+using Microsoft.EntityFrameworkCore;
 
 namespace DbApp.Infrastructure.Repositories.ResourceSystem
 {
@@ -143,13 +143,13 @@ namespace DbApp.Infrastructure.Repositories.ResourceSystem
         public async Task<decimal> GetEmployeeAttendanceRateAsync(
             int employeeId, DateTime? startDate, DateTime? endDate)
         {
-            var (presentDays, lateDays, absentDays, leaveDays) = 
+            var (presentDays, lateDays, absentDays, leaveDays) =
                 await GetEmployeeStatsAsync(employeeId, startDate, endDate);
-            
+
             int totalDays = presentDays + lateDays + absentDays + leaveDays;
-            
-            return totalDays > 0 
-                ? (decimal)(presentDays + leaveDays) / totalDays * 100 
+
+            return totalDays > 0
+                ? (decimal)(presentDays + leaveDays) / totalDays * 100
                 : 0;
         }
 
@@ -157,10 +157,10 @@ namespace DbApp.Infrastructure.Repositories.ResourceSystem
         {
             var startDate = new DateTime(year, month, 1, 0, 0, 0, DateTimeKind.Local);
             var endDate = startDate.AddMonths(1).AddDays(-1);
-            
-            var (_, lateDays, absentDays, _) = 
+
+            var (_, lateDays, absentDays, _) =
                 await GetEmployeeStatsAsync(employeeId, startDate, endDate);
-            
+
             return lateDays == 0 && absentDays == 0;
         }
     }

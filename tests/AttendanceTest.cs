@@ -1,13 +1,13 @@
-using DbApp.Application.ResourceSystem.Attendances;
-using DbApp.Domain.Entities.ResourceSystem;
-using DbApp.Domain.Enums.ResourceSystem;
-using DbApp.Domain.Interfaces.ResourceSystem;
-using Moq;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Threading;
 using System.Threading.Tasks;
+using DbApp.Application.ResourceSystem.Attendances;
+using DbApp.Domain.Entities.ResourceSystem;
+using DbApp.Domain.Enums.ResourceSystem;
+using DbApp.Domain.Interfaces.ResourceSystem;
+using Moq;
 using Xunit;
 
 namespace DbApp.Tests
@@ -33,7 +33,7 @@ namespace DbApp.Tests
 
             _mockRepo.Setup(r => r.GetByEmployeeAndDateAsync(1, It.IsAny<DateTime>()))
                      .ReturnsAsync((Attendance?)null); // 修复1
-            
+
             _mockRepo.Setup(r => r.AddAsync(It.IsAny<Attendance>()))
                      .Callback<Attendance>(a => a.AttendanceId = expectedId)
                      .Returns(Task.CompletedTask);
@@ -57,7 +57,7 @@ namespace DbApp.Tests
                      .ReturnsAsync(new Attendance()); // 修复2
 
             // Act & Assert
-            await Assert.ThrowsAsync<InvalidOperationException>(() => 
+            await Assert.ThrowsAsync<InvalidOperationException>(() =>
                 handler.Handle(command, CancellationToken.None));
         }
 
@@ -67,9 +67,9 @@ namespace DbApp.Tests
             // Arrange
             var handler = new RecordCheckInCommandHandler(_mockRepo.Object);
             var command = new RecordCheckInCommand(
-                1, 
+                1,
                 DateTime.Parse( // 修复3
-                    "2023-01-01 08:59:00", 
+                    "2023-01-01 08:59:00",
                     CultureInfo.InvariantCulture
                 )
             );
@@ -81,7 +81,7 @@ namespace DbApp.Tests
             await handler.Handle(command, CancellationToken.None);
 
             // Assert
-            _mockRepo.Verify(r => r.AddAsync(It.Is<Attendance>(a => 
+            _mockRepo.Verify(r => r.AddAsync(It.Is<Attendance>(a =>
                 a.AttendanceStatus == AttendanceStatus.Present)), Times.Once);
         }
 
@@ -91,9 +91,9 @@ namespace DbApp.Tests
             // Arrange
             var handler = new RecordCheckInCommandHandler(_mockRepo.Object);
             var command = new RecordCheckInCommand(
-                1, 
+                1,
                 DateTime.Parse( // 修复3
-                    "2023-01-01 09:01:00", 
+                    "2023-01-01 09:01:00",
                     CultureInfo.InvariantCulture
                 )
             );
@@ -105,7 +105,7 @@ namespace DbApp.Tests
             await handler.Handle(command, CancellationToken.None);
 
             // Assert
-            _mockRepo.Verify(r => r.AddAsync(It.Is<Attendance>(a => 
+            _mockRepo.Verify(r => r.AddAsync(It.Is<Attendance>(a =>
                 a.AttendanceStatus == AttendanceStatus.Late)), Times.Once);
         }
 
@@ -123,8 +123,8 @@ namespace DbApp.Tests
             await handler.Handle(command, CancellationToken.None);
 
             // Assert
-            _mockRepo.Verify(r => r.AddAsync(It.Is<Attendance>(a => 
-                a.AttendanceStatus == AttendanceStatus.Leave && 
+            _mockRepo.Verify(r => r.AddAsync(It.Is<Attendance>(a =>
+                a.AttendanceStatus == AttendanceStatus.Leave &&
                 a.LeaveType == LeaveType.Annual)), Times.Once);
         }
 
@@ -134,7 +134,7 @@ namespace DbApp.Tests
             // Arrange
             var handler = new GetEmployeeStatsQueryHandler(_mockRepo.Object);
             var query = new GetEmployeeStatsQuery(1, null, null);
-            
+
             _mockRepo.Setup(r => r.GetEmployeeStatsAsync(1, null, null))
                      .ReturnsAsync((3, 2, 1, 4));
 
@@ -156,7 +156,7 @@ namespace DbApp.Tests
             // Arrange
             var handler = new GetEmployeeMonthlyStatsQueryHandler(_mockRepo.Object);
             var query = new GetEmployeeMonthlyStatsQuery(1, 2023, 1);
-            
+
             _mockRepo.Setup(r => r.GetEmployeeStatsAsync(1, It.IsAny<DateTime>(), It.IsAny<DateTime>()))
                      .ReturnsAsync((20, 0, 0, 5));
 
@@ -177,13 +177,13 @@ namespace DbApp.Tests
             // Arrange
             var handler = new GetAbnormalRecordsQueryHandler(_mockRepo.Object);
             var query = new GetAbnormalRecordsQuery(null, DateTime.Today.AddDays(-7), DateTime.Today);
-            
+
             var abnormalRecords = new List<Attendance>
             {
                 new() { AttendanceStatus = AttendanceStatus.Late },
                 new() { AttendanceStatus = AttendanceStatus.Absent }
             };
-            
+
             _mockRepo.Setup(r => r.GetAbnormalRecordsAsync(null, It.IsAny<DateTime>(), It.IsAny<DateTime>()))
                      .ReturnsAsync(abnormalRecords);
 
@@ -201,7 +201,7 @@ namespace DbApp.Tests
             // Arrange
             var handler = new GetEmployeeStatsQueryHandler(_mockRepo.Object);
             var query = new GetEmployeeStatsQuery(1, null, null);
-            
+
             _mockRepo.Setup(r => r.GetEmployeeStatsAsync(1, null, null))
                      .ReturnsAsync((0, 0, 0, 0));
 
@@ -219,7 +219,7 @@ namespace DbApp.Tests
             // Arrange
             var handler = new RecordCheckOutCommandHandler(_mockRepo.Object);
             var command = new RecordCheckOutCommand(1, DateTime.Now);
-            
+
             _mockRepo.Setup(r => r.GetByEmployeeAndDateAsync(1, It.IsAny<DateTime>()))
                      .ReturnsAsync((Attendance?)null); // 修复1
 
@@ -227,7 +227,7 @@ namespace DbApp.Tests
             await handler.Handle(command, CancellationToken.None);
 
             // Assert
-            _mockRepo.Verify(r => r.AddAsync(It.Is<Attendance>(a => 
+            _mockRepo.Verify(r => r.AddAsync(It.Is<Attendance>(a =>
                 a.AttendanceStatus == AttendanceStatus.Absent)), Times.Once);
         }
 
@@ -238,7 +238,7 @@ namespace DbApp.Tests
             var handler = new UpdateAttendanceCommandHandler(_mockRepo.Object);
             var attendance = new Attendance { AttendanceId = 1 };
             var command = new UpdateAttendanceCommand(1, null, null, AttendanceStatus.Leave, LeaveType.Sick);
-            
+
             _mockRepo.Setup(r => r.GetByIdAsync(1))
                      .ReturnsAsync(attendance);
 
