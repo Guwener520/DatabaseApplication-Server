@@ -9,7 +9,7 @@ namespace DbApp.Application.ResourceSystem.Attendances
     public record CreateAttendanceCommand(
         int EmployeeId,
         DateTime AttendanceDate,
-        DateTime? CheckInTime,
+        DateTime CheckInTime,
         DateTime? CheckOutTime,
         AttendanceStatus Status,
         LeaveType? LeaveType) : IRequest<int>;

@@ -33,7 +33,7 @@ namespace DbApp.Application.ResourceSystem.Attendances
             {
                 EmployeeId = request.EmployeeId,
                 AttendanceDate = request.AttendanceDate,
-                CheckInTime = (DateTime)request.CheckInTime,
+                CheckInTime = request.CheckInTime,
                 CheckOutTime = request.CheckOutTime,
                 AttendanceStatus = request.Status,
                 LeaveType = request.LeaveType,
