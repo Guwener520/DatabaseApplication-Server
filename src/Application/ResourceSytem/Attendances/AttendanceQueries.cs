@@ -18,6 +18,8 @@ namespace DbApp.Application.ResourceSystem.Attendances
     public record GetEmployeeMonthlyStatsQuery(int EmployeeId, int Year, int Month) : IRequest<MonthlyStatsResponse>;
     public record GetDepartmentStatsQuery(string DepartmentId, DateTime? StartDate, DateTime? EndDate) : IRequest<DepartmentStatsResponse>;
 
+    // 获取员工是否全勤查询
+    public record CheckEmployeeFullAttendanceQuery(int EmployeeId, int Year, int Month) : IRequest<bool>;
     // 响应模型
     public class EmployeeStatsResponse
     {

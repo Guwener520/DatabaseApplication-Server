@@ -28,12 +28,12 @@ namespace DbApp.Application.ResourceSystem.Attendances
                 throw new InvalidOperationException(
                     $"该员工在 {request.AttendanceDate:yyyy-MM-dd} 已有考勤记录");
             }
-
+            var checkInTime = request.CheckInTime ?? request.AttendanceDate.Date;
             var attendance = new Attendance
             {
                 EmployeeId = request.EmployeeId,
                 AttendanceDate = request.AttendanceDate,
-                CheckInTime = request.CheckInTime,
+                CheckInTime = checkInTime,
                 CheckOutTime = request.CheckOutTime,
                 AttendanceStatus = request.Status,
                 LeaveType = request.LeaveType,

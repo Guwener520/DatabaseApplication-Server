@@ -216,4 +216,29 @@ namespace DbApp.Application.ResourceSystem.Attendances
             };
         }
     }
+    public class CheckEmployeeFullAttendanceQueryHandler : IRequestHandler<CheckEmployeeFullAttendanceQuery, bool>
+    {
+        private readonly IAttendanceRepository _attendanceRepository;
+
+        public CheckEmployeeFullAttendanceQueryHandler(IAttendanceRepository attendanceRepository)
+        {
+            _attendanceRepository = attendanceRepository;
+        }
+
+        public async Task<bool> Handle(CheckEmployeeFullAttendanceQuery request, CancellationToken cancellationToken)
+        {
+            var startDate = new DateTime(request.Year, request.Month, 1, 0, 0, 0, DateTimeKind.Local);
+            var endDate = startDate.AddMonths(1).AddDays(-1);
+        
+            // 只获取需要的统计项（避免未使用变量警告）
+            var (_, lateDays, absentDays, _) = 
+                await _attendanceRepository.GetEmployeeStatsAsync(
+                    request.EmployeeId,
+                    startDate,
+                    endDate
+                );
+        
+            return lateDays == 0 && absentDays == 0;
+        }
+    }
 }

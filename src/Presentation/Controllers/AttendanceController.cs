@@ -240,5 +240,20 @@ namespace DbApp.WebApi.Controllers
                 return BadRequest(ex.Message);
             }
         }
+        // 检查员工是否全勤
+        [HttpGet("employee/{employeeId}/full-attendance/{year}/{month}")]
+        public async Task<IActionResult> CheckEmployeeFullAttendance(
+            int employeeId, int year, int month)
+        {
+        try
+        {
+            var isFullAttendance = await _mediator.Send(new CheckEmployeeFullAttendanceQuery(employeeId, year, month));
+            return Ok(new { IsFullAttendance = isFullAttendance });
+        }
+            catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+        }
     }
 }
