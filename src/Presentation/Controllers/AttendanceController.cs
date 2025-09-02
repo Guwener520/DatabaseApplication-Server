@@ -245,15 +245,15 @@ namespace DbApp.WebApi.Controllers
         public async Task<IActionResult> CheckEmployeeFullAttendance(
             int employeeId, int year, int month)
         {
-        try
-        {
-            var isFullAttendance = await _mediator.Send(new CheckEmployeeFullAttendanceQuery(employeeId, year, month));
-            return Ok(new { IsFullAttendance = isFullAttendance });
-        }
+            try
+            {
+                var isFullAttendance = await _mediator.Send(new CheckEmployeeFullAttendanceQuery(employeeId, year, month));
+                return Ok(new { IsFullAttendance = isFullAttendance });
+            }
             catch (Exception ex)
-        {
-            return BadRequest(ex.Message);
-        }
+            {
+                return BadRequest(ex.Message);
+            }
         }
     }
 }

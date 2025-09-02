@@ -19,4 +19,10 @@ namespace DbApp.Application.ResourceSystem.EmployeeReviews
         int? EvaluatorId) : IRequest;
 
     public record DeleteEmployeeReviewCommand(int ReviewId) : IRequest;
+
+    // 考勤扣分命令
+    public record CreateAttendanceDeductionCommand(
+        int EmployeeId,
+        string Period,
+        int? EvaluatorId) : IRequest<int>;
 }

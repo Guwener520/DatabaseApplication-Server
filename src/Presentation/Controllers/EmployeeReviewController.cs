@@ -169,6 +169,19 @@ namespace DbApp.WebApi.Controllers
                 return BadRequest(ex.Message);
             }
         }
+        [HttpPost("attendance-deduction")]
+        public async Task<IActionResult> CreateAttendanceDeduction([FromBody] CreateAttendanceDeductionCommand command)
+        {
+            try
+            {
+                var id = await _mediator.Send(command);
+                return CreatedAtAction(nameof(GetById), new { id }, new { id });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
 
     }
 }

@@ -229,15 +229,15 @@ namespace DbApp.Application.ResourceSystem.Attendances
         {
             var startDate = new DateTime(request.Year, request.Month, 1, 0, 0, 0, DateTimeKind.Local);
             var endDate = startDate.AddMonths(1).AddDays(-1);
-        
+
             // 只获取需要的统计项（避免未使用变量警告）
-            var (_, lateDays, absentDays, _) = 
+            var (_, lateDays, absentDays, _) =
                 await _attendanceRepository.GetEmployeeStatsAsync(
                     request.EmployeeId,
                     startDate,
                     endDate
                 );
-        
+
             return lateDays == 0 && absentDays == 0;
         }
     }

@@ -45,10 +45,16 @@ public class EmployeeRepository(ApplicationDbContext dbContext) : IEmployeeRepos
         }
 
         var employees = await _dbContext.Employees
-            .Where(e => e.DepartmentName != null && e.DepartmentName.Contains(keyword))
+            .Where(e =>
+                (e.StaffNumber != null && e.StaffNumber.Contains(keyword)) ||
+                (e.Position != null && e.Position.Contains(keyword)) ||
+                (e.DepartmentName != null && e.DepartmentName.Contains(keyword)) ||
+                (e.Certification != null && e.Certification.Contains(keyword)) ||
+                (e.ResponsibilityArea != null && e.ResponsibilityArea.Contains(keyword)))
             .ToListAsync();
         return employees;
     }
+
     public async Task<List<Employee>> GetByDepartmentAsync(string departmentName)
     {
         if (string.IsNullOrWhiteSpace(departmentName))
